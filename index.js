@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require('cors');
 const AdminRouter = require('./routes/admin.routes')
+const {verifyToken} = require('./config/authorization')
 
 
 app = express()

@@ -1,9 +1,9 @@
 
 
-DROP TABLE IF EXISTS `admin`;
+/* DROP TABLE IF EXISTS `admin`; */
 
 
-CREATE TABLE `admin` (
+CREATE TABLE IF NOT EXISTS `admin` (
   `admin_id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(45) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,

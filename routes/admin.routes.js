@@ -1,20 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const {createAdmin, loginAdmin, updateAdmin} = require('../controllers/admin.controller');
+const { verifyToken } = require('../config/authorization');
 
 
-
-router.post('/create', (req, res)=>{
-    let message = req.body.message
-
-    console.log(message)
-
-    res.status(200).json({
-        message : "Admin created"
-    })
-    //console.log("Admin created")
-})
-
-
+router.post('/create', createAdmin)
+router.post('/login', loginAdmin)
+router.put('/update', verifyToken , updateAdmin)
 
 
 
