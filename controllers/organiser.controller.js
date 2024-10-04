@@ -86,7 +86,7 @@ const deleteOrganiser = async(req, res)=>{
 
 const loginOrganiser = async(req, res)=>{
     try{    
-        const { email, password} = req.body;
+        const { email, password } = req.body;
         const [result] = await db.execute(
             'SELECT * FROM organiser WHERE email=?',
             [email]
