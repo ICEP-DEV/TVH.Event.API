@@ -1,7 +1,17 @@
 
+DROP TABLE IF EXISTS `notification`;
+DROP TABLE IF EXISTS `feedback`;
+DROP TABLE IF EXISTS `attendee_favourite_event`;
+DROP TABLE IF EXISTS `survey`;
+DROP TABLE IF EXISTS `registration`;
+DROP TABLE IF EXISTS `event`;
+DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `attendee`;
+DROP TABLE IF EXISTS `organiser`;
+DROP TABLE IF EXISTS `admin`;
 
 
-CREATE TABLE IF NOT EXIST `admin` (
+CREATE TABLE IF NOT EXISTS `admin` (
   `admin_id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(45) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
@@ -17,7 +27,7 @@ INSERT INTO `admin` VALUES (1,'admin15','admin@gmail.com','$2b$10$coHCgI9fiHL20L
 UNLOCK TABLES;
 
 
-CREATE TABLE `attendee` (
+CREATE TABLE IF NOT EXISTS `attendee` (
   `attendee_id` int NOT NULL AUTO_INCREMENT,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
@@ -29,7 +39,7 @@ CREATE TABLE `attendee` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE `organiser` (
+CREATE TABLE IF NOT EXISTS `organiser` (
   `organiser_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
@@ -47,14 +57,13 @@ INSERT INTO `organiser` VALUES (1,'organiser1','$2b$10$0HW2WBx9qbz2be9jwtlAfe80N
 UNLOCK TABLES;
 
 
-CREATE TABLE `category` (
+CREATE TABLE IF NOT EXISTS `category` (
   `category_id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`category_id`)
-)
+);
 
-
-CREATE TABLE `event` (
+CREATE TABLE IF NOT EXISTS `event` (
   `event_id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(45) NOT NULL,
   `description` varchar(45) DEFAULT NULL,
@@ -75,7 +84,7 @@ CREATE TABLE `event` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE `registration` (
+CREATE TABLE IF NOT EXISTS `registration` (
   `registration_id` int NOT NULL AUTO_INCREMENT,
   `attendee_id` int DEFAULT NULL,
   `event_id` int DEFAULT NULL,
@@ -87,7 +96,7 @@ CREATE TABLE `registration` (
   CONSTRAINT `registration event fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `survey` (
+CREATE TABLE IF NOT EXISTS `survey` (
   `survey_id` int NOT NULL,
   `create_at` date DEFAULT NULL,
   `expires_at` date DEFAULT NULL,
@@ -99,7 +108,7 @@ CREATE TABLE `survey` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE `attendee_favourite_event` (
+CREATE TABLE IF NOT EXISTS `attendee_favourite_event` (
   `attendee_favourite_event_id` int NOT NULL AUTO_INCREMENT,
   `event_id` int DEFAULT NULL,
   `attendee_id` int DEFAULT NULL,
@@ -110,8 +119,7 @@ CREATE TABLE `attendee_favourite_event` (
   CONSTRAINT `event fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
-CREATE TABLE `feedback` (
+CREATE TABLE IF NOT EXISTS `feedback` (
   `feedback_id` int NOT NULL,
   `registration_id` int DEFAULT NULL,
   `survey_id` int DEFAULT NULL,
@@ -124,7 +132,10 @@ CREATE TABLE `feedback` (
   CONSTRAINT `feedback survey` FOREIGN KEY (`survey_id`) REFERENCES `survey` (`survey_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `notification` (
+
+
+
+CREATE TABLE IF NOT EXISTS `notification` (
   `notification_id` int NOT NULL,
   `attendee_id` int DEFAULT NULL,
   `admin_id` int DEFAULT NULL,
