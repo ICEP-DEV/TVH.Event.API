@@ -16,7 +16,7 @@ const createAdmin = async(req, res)=>{
         return res.status(200).json({result:result})
 
     }catch(error){
-        return res.status(500).json({error})
+        return res.status(500).json({message : error.message})
     }
 }
 
@@ -25,24 +25,20 @@ const loginAdmin = async(req, res) =>{
     try{
         let { username, password } = req.body;
 
-        const [result] = await db.execute('SELECT username, password from admin WHERE username = ?', [username]);
+        const [result] = await db.execute('SELECT * from admin WHERE username = ?', [username]);
 
         if(result.length > 0){
-
-            if(bcrypt.compare(password, result[0].password) === true){
+            const isValid = await bcrypt.compare(password, result[0].password);
+            if(isValid === true){
                 const token = jwt.sign(
-                    {
-                        username : result[0].username 
-                    },
+                    {},
                     secret_key,
                 );
                 
                 return res.status(200).json({
                     token : token,
                     type : "admin",
-                    user_id : result[0].admin_id,
-                    email : result[0].email,
-                    username : result[0].username 
+                    result
                 });
             }
             else{
@@ -71,8 +67,7 @@ const updateAdmin = async(req, res)=>{
         return res.status(200).json({result})
     }
     catch(error){
-        console.log(error)
-        return res.status(500).json({error})
+        return res.status(500).json({message : error.message})
     }
 }
 

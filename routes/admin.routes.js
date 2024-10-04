@@ -6,8 +6,8 @@ const { verifyToken } = require('../config/authorization');
 
 router.post('/create', createAdmin)
 router.post('/login', loginAdmin)
-router.put('/update', verifyToken , updateAdmin)
+router.put('/update/:id', verifyToken , updateAdmin)
 
 
 
-module.exports = router;
+module.exports = router; //only exporting a single object

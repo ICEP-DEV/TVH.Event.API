@@ -13,3 +13,15 @@ CREATE TABLE IF NOT EXISTS `admin` (
   UNIQUE KEY `email_UNIQUE` (`email`),
   UNIQUE KEY `username_UNIQUE` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE IF NOT EXISTS `organiser` (
+  `organiser_id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `email` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`organiser_id`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
+  );
+

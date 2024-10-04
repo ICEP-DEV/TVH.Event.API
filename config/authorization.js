@@ -6,7 +6,6 @@ let secret_key = "26a8VsKC7m65GCT1GWPMQ8l5IBf0kMdQqMD2qMFfLX251wO96qjLfKAXvhDu7y
 const verifyToken = (req, res, next) =>{
     const token = req.header('token')?.split(' ')[1]
 
-    console.log(token)
     if(!token){
         return res.status(403).json({ message: 'Access Denied, No token provided' });
     }
