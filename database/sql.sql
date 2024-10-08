@@ -1,4 +1,4 @@
-
+/*
 DROP TABLE IF EXISTS `notification`;
 DROP TABLE IF EXISTS `feedback`;
 DROP TABLE IF EXISTS `attendee_favourite_event`;
@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS `category`;
 DROP TABLE IF EXISTS `attendee`;
 DROP TABLE IF EXISTS `organiser`;
 DROP TABLE IF EXISTS `admin`;
-
+*/
 
 CREATE TABLE IF NOT EXISTS `admin` (
   `admin_id` int NOT NULL AUTO_INCREMENT,
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `event` (
   `event_id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(45) NOT NULL,
   `description` varchar(45) DEFAULT NULL,
-  `time` varchar(45) DEFAULT NULL,
+  `time` timestamp DEFAULT NULL,
   `location` varchar(45) DEFAULT NULL,
   `admin_id` int DEFAULT NULL,
   `organiser_id` int DEFAULT NULL,

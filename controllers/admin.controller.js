@@ -6,18 +6,18 @@ const bcrypt = require('bcrypt');
 
 
 const createAdmin = async(req, res)=>{
-    try{
-        let { username, email , password } = req.body;
-        
-        password  = await bcrypt.hash(password, 10);
 
-        const [result] = await db.execute('INSERT INTO admin (username,email,password) VALUES (?,?,?)', [username, email, password])
+    let { username, email , password } = req.body;
+    password  = await bcrypt.hash(password, 10);
 
-        return res.status(200).json({result:result})
-
-    }catch(error){
+    await db.execute(
+        'INSERT INTO admin (username,email,password) VALUES (?,?,?)',
+        [username, email, password]
+    ).then((response) => {
+        return res.status(200).json({result:response})
+    }).catch((error) => {
         return res.status(500).json({message : error.message})
-    }
+    });
 }
 
 
@@ -57,18 +57,17 @@ const loginAdmin = async(req, res) =>{
 
 
 const updateAdmin = async(req, res)=>{
-    try{
-        let { user_id, username, email , password } = req.body;
+    let { user_id, username, email , password } = req.body;
+    password = await bcrypt.hash(password, 10);
 
-        password = await bcrypt.hash(password, 10);
-
-        const [result] = await db.execute("UPDATE admin set username = ?, email = ?, password = ? WHERE admin_id = ?", [username, email, password ,user_id]);
-
-        return res.status(200).json({result})
-    }
-    catch(error){
+    await db.execute(
+        "UPDATE admin set username = ?, email = ?, password = ? WHERE admin_id = ?",
+        [username, email, password ,user_id]
+    ).then((response) => {
+        return res.status(200).json({result : response[0]})
+    }).catch((error) => {
         return res.status(500).json({message : error.message})
-    }
+    });
 }
 
 

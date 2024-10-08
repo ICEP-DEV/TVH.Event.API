@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const fs = require('fs');
 
 
-const sql = fs.readFileSync('./database/sql.sql', 'utf8');
+//const sql = fs.readFileSync('./database/sql.sql', 'utf8');
 
 
 const pool = mysql.createPool({
@@ -14,7 +14,7 @@ const pool = mysql.createPool({
    multipleStatements: true, 
 });
 
-
+/*
 pool.query(sql, (err, results) => {
     if(err){
         console.log(err)
@@ -24,7 +24,7 @@ pool.query(sql, (err, results) => {
     }
     
 });
-
+*/
 
 module.exports = pool.promise();
 
