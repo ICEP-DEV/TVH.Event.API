@@ -26,7 +26,6 @@ const loginAdmin = async(req, res) =>{
         let { email , password } = req.body;
 
         const [result] = await db.execute('SELECT * from admin WHERE email = ?', [email]);
-
         if(result.length > 0){
             const isValid = await bcrypt.compare(password, result[0].password);
             if(isValid === true){

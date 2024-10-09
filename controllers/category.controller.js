@@ -20,7 +20,7 @@ const getCategory = async(req, res) => {
         'SELECT * FROM category WHERE category_id = ?',
         [id]
     ).then((response) => {
-        return res.status(200).json({event : response[0]})
+        return res.status(200).json({results : response[0]})
     }).catch((e) => {
         return res.status(500).json({message : e.message});
     });
@@ -30,7 +30,7 @@ const getAllCategory = async(req, res) => {
     await db.execute(
         'SELECT category_id, title from category'
     ).then((response) => {
-        return res.status(200).json({events : response[0]})
+        return res.status(200).json({results : response[0]})
     }).catch((e) => {
         return res.status(500).json({message : e.message});
     });
