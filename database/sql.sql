@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 LOCK TABLES `admin` WRITE;
-INSERT INTO `admin` VALUES (1,'admin15','admin@gmail.com','$2b$10$coHCgI9fiHL20LZPOBeucuhkANezBqUGg78d.GCMTp5TzR2XwRwYa','2024-10-03 15:04:53'),(2,'admin2','admin2@gmail.com','$2b$10$xcPwJJa3avKfPt4NP4QFvusQ8qPA5VrD8bGEPMdbCb5J29l3cy1N2','2024-10-03 17:21:20');
+INSERT IGNORE INTO `admin` VALUES (1,'admin15','admin@gmail.com','$2b$10$coHCgI9fiHL20LZPOBeucuhkANezBqUGg78d.GCMTp5TzR2XwRwYa','2024-10-03 15:04:53'),(2,'admin2','admin2@gmail.com','$2b$10$xcPwJJa3avKfPt4NP4QFvusQ8qPA5VrD8bGEPMdbCb5J29l3cy1N2','2024-10-03 17:21:20');
 UNLOCK TABLES;
 
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `organiser` (
 
 LOCK TABLES `organiser` WRITE;
 
-INSERT INTO `organiser` VALUES (1,'organiser1','$2b$10$0HW2WBx9qbz2be9jwtlAfe80NpgG/geYTlUrUKXpqYtuaaAepYt7m','2024-10-04 08:20:15','organiser@gmail.com'),(3,'organiser2','$2b$10$7UuHUBM/4Oe2H62AHcbpROgiJuoduHEBjh4ThJDraDXzhQjRUvidW','2024-10-04 08:22:25','organiser2@gmail.com');
+INSERT IGNORE INTO `organiser` VALUES (1,'organiser1','$2b$10$0HW2WBx9qbz2be9jwtlAfe80NpgG/geYTlUrUKXpqYtuaaAepYt7m','2024-10-04 08:20:15','organiser@gmail.com'),(3,'organiser2','$2b$10$7UuHUBM/4Oe2H62AHcbpROgiJuoduHEBjh4ThJDraDXzhQjRUvidW','2024-10-04 08:22:25','organiser2@gmail.com');
 
 UNLOCK TABLES;
 
