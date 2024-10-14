@@ -18,6 +18,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.3",
     "nodemon": "^3.1.7",
+    "react-scripts": "^5.0.1",
+    "start": "^5.1.0",
     "tvh.event.api": "file:"
   }
 }
