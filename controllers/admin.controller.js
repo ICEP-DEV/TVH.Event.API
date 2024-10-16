@@ -5,55 +5,7 @@ const bcrypt = require('bcrypt');
 
 
 
-const createAdmin = async(req, res)=>{
 
-    let { username, email , password } = req.body;
-    password  = await bcrypt.hash(password, 10);
-
-    await db.execute(
-        'INSERT INTO admin (username,email,password) VALUES (?,?,?)',
-        [username, email, password]
-    ).then((response) => {
-        return res.status(200).json({result:response})
-    }).catch((error) => {
-        return res.status(500).json({message : error.message})
-    });
-}
-
-
-const loginAdmin = async(req, res) =>{
-    try{
-        let { email , password } = req.body;
-
-        const [result] = await db.execute('SELECT * from admin WHERE email = ?', [email]);
-        if(result.length > 0){
-            const isValid = await bcrypt.compare(password, result[0].password);
-            if(isValid === true){
-                const token = jwt.sign(
-                    {},
-                    secret_key,
-                );
-                
-                return res.status(200).json({
-                    token : token,
-                    type : "admin",
-                    result
-                });
-            }
-            else{
-                return res.status(401).json({message : "Password invalid"})
-            }
-        }
-        else{
-            return res.status(404).json({message : "User not found"})
-        }
-
-    }
-    catch(error){
-        console.log(error)
-        res.status(500).json({error})
-    }
-}
 
 
 const updateAdmin = async(req, res)=>{
@@ -74,8 +26,6 @@ const updateAdmin = async(req, res)=>{
 
 
 module.exports = {
-    createAdmin,
-    loginAdmin,
     updateAdmin
 }
 
