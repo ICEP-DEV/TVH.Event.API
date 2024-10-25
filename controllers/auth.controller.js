@@ -67,7 +67,6 @@ const webuserLogin = async(req, res) =>{
         }
         
 
-        console.log("Here ",type)
         if(type.length > 0){
             const isValid = await bcrypt.compare(password, result[0].password);
             if(isValid === true){
@@ -78,7 +77,11 @@ const webuserLogin = async(req, res) =>{
                 return res.status(200).json({
                     token,
                     type,
-                    result
+                    res : {
+                        user_id : result[0][type + "_id"],
+                        username : result[0].username,
+                        email : result[0].email,
+                    }
                 })
             }
         }
@@ -96,33 +99,36 @@ const attendeeCreate = async(req, res) => {
     let { firstname, lastname, email, password} = req.body
 
     password = await bcrypt.hash(password, 10);
-
+    
     await db.execute(
-        'INSERT INTO attendee(firstname, lastname, email, password) values (?,?,?,?)',
+        'INSERT INTO attendee(first_name, last_name, email, password) values (?,?,?,?)',
         [firstname, lastname, email, password]
     ).then((response)=>{
         return res.status(200).json({results : "Account Created"})
     }).catch((error) => {
-        return res.status(401).json({message : error.message})
+        return res.status(403).json({message : error.message})
     })
     //console.log(req.body)
-    return res.status(500).json({message : "Something went wrong"})
+    //return res.status(500).json({message : "Something went wrong"})
 }
 
 
 const mobileLogin = async(req, res) => {
-    const { email , password} = req.body;
+    const { email , password } = req.body;
 
     try{
         const [response] = await db.execute(
             'Select email, password from attendee where email = ?',
             [email]
         )
-
         if(response.length > 0){
-            const isValid = bcrypt.compare(password, response[0].password);
+            const isValid = await bcrypt.compare(password, response[0].password);
             if(isValid){
-                return res.status(200).json({response})
+                const token = jwt.sign(
+                    {},
+                    secret_key
+                )
+                return res.status(200).json({ token, response, respons })
             }
         }
         return res.status(403).json({message : "Invalid Credentials"})
