@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `event` (
   `category_id` int DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
+  `image` blob DEFAULT NULL,
   PRIMARY KEY (`event_id`),
   KEY `admin fk_idx` (`admin_id`),
   KEY `organiser fk_idx` (`organiser_id`),

@@ -6,9 +6,9 @@ const fs = require("fs");
 const pool = mysql.createPool({
   host: "sql8.freesqldatabase.com",
   port: 3306,
-  user: "sql8737298",
-  password: "AK4cqcNvxm",
-  database: "sql8737298",
+  user: "sql8741451",
+  password: "r9BjLb1q8P",
+  database: "sql8741451",
   multipleStatements: true,
 });
 

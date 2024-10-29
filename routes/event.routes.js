@@ -5,7 +5,10 @@ const { createEvent, deleteEvent, getAllEvents,getEvent,getEventByUser,updateEve
 router.post('/create', createEvent)
 router.get('/all', getAllEvents)
 router.get('/category/:id', getEventByCategory)
-
+router.get('/:id', getEvent)
+router.delete('/:id', deleteEvent)
+router.put('/:id', updateEvent)
+router.post('/fetchbyuser', getEventByUser)
 
 
 
