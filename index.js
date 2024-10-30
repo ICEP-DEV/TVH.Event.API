@@ -6,6 +6,7 @@ const EventRouter = require('./routes/event.routes');
 const CategoryRouter = require('./routes/category.routes');
 const AttendeeRouter = require('./routes/attendee.route');
 const AuthRouter = require('./routes/auth.routes');
+const RegisterRouter = require('./routes/register.routes');
 const {verifyToken} = require('./config/authorization');
 
 
@@ -25,6 +26,7 @@ app.use('/api/event', EventRouter)
 app.use('/api/category', CategoryRouter)
 app.use('/api/attendee', AttendeeRouter)
 app.use('/api/auth', AuthRouter)
+app.use('/api/register', RegisterRouter)
 
 
 app.get("/" , (req,res) =>{
