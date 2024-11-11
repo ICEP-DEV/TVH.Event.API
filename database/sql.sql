@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `category` (
 CREATE TABLE IF NOT EXISTS `event` (
   `event_id` int NOT NULL AUTO_INCREMENT,
   `title` varchar(45) NOT NULL,
-  `description` varchar(45) DEFAULT NULL,
+  `description` varchar(500) DEFAULT NULL,
   `time` timestamp DEFAULT NULL,
   `location` varchar(45) DEFAULT NULL,
   `admin_id` int DEFAULT NULL,
