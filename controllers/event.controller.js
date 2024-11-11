@@ -54,7 +54,7 @@ const getAllEvents = async(req, res) => {
       return res.status(200).json({results : events})
     }
     catch(error){
-
+      console.log(error.message)
       return res.status(500).json({message : error.message})
     }
 }

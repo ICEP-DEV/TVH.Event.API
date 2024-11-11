@@ -22,7 +22,7 @@ const getRegisterForm = async(req, res) => {
     try{
         const event_id = req.params.event_id
         const [rows] = await db.execute(
-            'SELECT event_id, questionair FROM registration_form WHERE event_id = ?',
+            'SELECT * FROM registration_form WHERE event_id = ?',
             [event_id]
         );
     
@@ -39,10 +39,52 @@ const getRegisterForm = async(req, res) => {
     }
 }
 
+const submitRegister = async(req, res) =>{
+    try{
+        const {attendee_id, reg_form_id, response, questions} = req.body;
+        const answers = []
+        questions.map((question) =>{
+            if(question !== ""){
+                console.log(response[question])
+                answers.push(response[question])
+            }
+        });
+        await db.execute(
+            'INSERT INTO registration(attendee_id,registration_form_id,response) VALUES(?,?,?)',
+            [attendee_id,reg_form_id,answers]
+        ).then(()=>{
+            return res.status(200).json({message : "Successfully Registered"})
+        });
 
+
+    }catch(error){
+        console.log(error.message)
+    }
+}
+
+const checkRegistered = async(req, res)=>{
+    try{
+        
+        const {attendee_id, event} = req.body;
+        const found = await db.execute(
+    
+            'SELECT r.* from registration r JOIN registration_form rf ON r.registration_form_id = rf.registration_form_id WHERE r.attendee_id = ? AND rf.event_id = ?',
+            [attendee_id, event]
+        )
+        if(found[0].length > 0){
+            return res.status(200).json({message: "Already Registered"})
+        }else{
+            return res.status(204).json({message : "Not registered yet"})
+        }
+    }catch(error){
+        return res.status(500).json({message : error.message})
+    }
+}
 
 
 module.exports = {
     createRegisterForm,
-    getRegisterForm
+    getRegisterForm,
+    submitRegister,
+    checkRegistered
 }

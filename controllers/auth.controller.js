@@ -118,7 +118,7 @@ const mobileLogin = async(req, res) => {
 
     try{
         const [response] = await db.execute(
-            'Select email, password from attendee where email = ?',
+            'Select attendee_id , email, password from attendee where email = ?',
             [email]
         )
         if(response.length > 0){
@@ -128,7 +128,7 @@ const mobileLogin = async(req, res) => {
                     {},
                     secret_key
                 )
-                return res.status(200).json({ token, response, respons })
+                return res.status(200).json({ token, response })
             }
         }
         return res.status(403).json({message : "Invalid Credentials"})
