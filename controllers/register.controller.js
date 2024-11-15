@@ -82,9 +82,29 @@ const checkRegistered = async(req, res)=>{
 }
 
 
+const allRegistered = async(req, res)=>{
+    try{
+        const {event_id} = req.params
+        console.log(event_id)
+        const response = await db.execute(
+            'SELECT r.registration_id, r.submitted_at, r.successful, r.response, a.first_name, a.last_name, a.email ' +
+            'from registration  r ' + 
+            'JOIN attendee a on r.attendee_id = a.attendee_id ' + 
+            'JOIN registration_form rf on r.registration_form_id = rf.registration_form_id ' +
+            'WHERE rf.event_id = ?',
+            [event_id]
+        )
+
+        return res.status(200).json({results : response[0]})
+    }catch(error){
+        return res.status(200).json({message : error.message})
+    }
+}
+
 module.exports = {
     createRegisterForm,
     getRegisterForm,
     submitRegister,
-    checkRegistered
+    checkRegistered,
+    allRegistered
 }
