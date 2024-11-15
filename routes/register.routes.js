@@ -9,7 +9,7 @@ router.post('/create', createRegisterForm)
 router.get('/:event_id', getRegisterForm)
 router.post('/submit', submitRegister)
 router.post('/checkattendee', checkRegistered)
-router.get('/', allRegistered)
+router.get('/attendee/:event_id', allRegistered)
 
 
 module.exports = router;
