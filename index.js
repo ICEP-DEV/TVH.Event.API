@@ -7,6 +7,7 @@ const CategoryRouter = require('./routes/category.routes');
 const AttendeeRouter = require('./routes/attendee.routes');
 const AuthRouter = require('./routes/auth.routes');
 const RegisterRouter = require('./routes/register.routes');
+const FeedbackRouter = require('./routes/feedback.routes');
 const SurveyRouter = require('./routes/survey.routes');
 const {verifyToken} = require('./config/authorization');
 
@@ -28,6 +29,7 @@ app.use('/api/category', CategoryRouter)
 app.use('/api/attendee', AttendeeRouter)
 app.use('/api/auth', AuthRouter)
 app.use('/api/register', RegisterRouter)
+app.use('/api/feedback', FeedbackRouter);
 app.use('/api/survey', SurveyRouter)
 
 
