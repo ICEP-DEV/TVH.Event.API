@@ -85,7 +85,6 @@ const checkRegistered = async(req, res)=>{
 const allRegistered = async(req, res)=>{
     try{
         const {event_id} = req.params
-        console.log(event_id)
         const response = await db.execute(
             'SELECT r.registration_id, r.submitted_at, r.successful, r.response, a.first_name, a.last_name, a.email ' +
             'from registration  r ' + 
@@ -97,8 +96,21 @@ const allRegistered = async(req, res)=>{
 
         return res.status(200).json({results : response[0]})
     }catch(error){
-        return res.status(200).json({message : error.message})
+        return res.status(500).json({message : error.message})
     }
+}
+
+const deleteRegisterForm = async(req, res) =>{
+    const {register_form_id} = req.params;
+
+    await db.execute(
+        "DELETE from registration_form where registration_form_id = ?",
+        [register_form_id]
+    ).then((response) =>{
+        return res.status(200).json({message : "Success"})
+    }).catch((error) =>{
+        return res.status(500).json({message : error.message}) 
+    });
 }
 
 module.exports = {
@@ -106,5 +118,6 @@ module.exports = {
     getRegisterForm,
     submitRegister,
     checkRegistered,
-    allRegistered
+    allRegistered,
+    deleteRegisterForm
 }

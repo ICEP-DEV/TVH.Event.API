@@ -1,3 +1,4 @@
+const { response } = require("express");
 const db = require("../config/config");
 
 // Add new feedback
@@ -48,6 +49,20 @@ exports.getFeedbackBySurvey = async (req, res) => {
     }
   };
   
+
+exports.getFeedbackByEvent = async(req, res) => {
+  const {event_id} = req.params;
+  
+
+  await db.execute(
+    "SELECT f.* FROM feedback f " +
+    "JOIN survey s on f.survey_id = s.survey_id " +
+    "WHERE s.event_id = ?",
+    [event_id]
+  ).then((response) =>{
+    res.status(200).json({results : response[0]})
+  })
+}
   
 
 // Delete feedback by ID
