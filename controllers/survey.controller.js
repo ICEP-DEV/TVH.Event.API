@@ -21,10 +21,10 @@ const getSurvey = async(req, res)=>{
     const {survey_id} = req.params;
 
     await db.execute(
-        "SELECT * from survey WHERE survey_id = ?",
+        "SELECT survey_id, create_at, expires_at, event_id, questions, title from survey WHERE survey_id = ?",
         [survey_id]
     ).then((response) =>{
-        return res.status(200).json({results : response})
+        return res.status(200).json({results : response[0]})
     }).catch((error)=>{
         return res.status(500).json({message : error.message})
     })
