@@ -55,12 +55,18 @@ exports.getFeedbackByEvent = async(req, res) => {
   
 
   await db.execute(
-    "SELECT f.* FROM feedback f " +
+    "SELECT f.feedback_id, f.rating, f.responses,f.submitted, s.questions, a.first_name, a.last_name, a.gender " +
+    "FROM feedback f " +
     "JOIN survey s on f.survey_id = s.survey_id " +
+    "JOIN registration r on f.registration_id = r.registration_id " +
+    "JOIN attendee a on r.attendee_id = a.attendee_id " +
     "WHERE s.event_id = ?",
     [event_id]
   ).then((response) =>{
     res.status(200).json({results : response[0]})
+  }).catch((error) =>{
+    console.log(error)
+    res.status(500).json({message : error.message})
   })
 }
   

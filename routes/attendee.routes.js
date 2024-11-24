@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router();
-const {  } = require('../controllers/attendee.controller')
+const { updateDeviceID } = require('../controllers/attendee.controller')
 
 
 
-
+router.post("/device", updateDeviceID)
 
 
 

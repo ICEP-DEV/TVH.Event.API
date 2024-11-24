@@ -96,13 +96,13 @@ const webuserLogin = async(req, res) =>{
 
 
 const attendeeCreate = async(req, res) => {
-    let { firstname, lastname, email, password} = req.body
+    let { firstname, lastname, email, password,gender,ethnic_group} = req.body
 
     password = await bcrypt.hash(password, 10);
     
     await db.execute(
-        'INSERT INTO attendee(first_name, last_name, email, password) values (?,?,?,?)',
-        [firstname, lastname, email, password]
+        'INSERT INTO attendee(first_name, last_name, email, password, gender, ethnic_group) values (?,?,?,?,?,?)',
+        [firstname, lastname, email, password, gender, ethnic_group]
     ).then((response)=>{
         return res.status(200).json({results : "Account Created"})
     }).catch((error) => {
@@ -114,8 +114,8 @@ const attendeeCreate = async(req, res) => {
 
 
 const mobileLogin = async(req, res) => {
-    const { email , password } = req.body;
-
+    const { email , password, device_id } = req.body;
+    console.log(email)
     try{
         const [response] = await db.execute(
             'Select attendee_id , email, password from attendee where email = ?',

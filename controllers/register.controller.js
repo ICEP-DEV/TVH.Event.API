@@ -41,22 +41,17 @@ const getRegisterForm = async(req, res) => {
 
 const submitRegister = async(req, res) =>{
     try{
-        const {attendee_id, reg_form_id, response, questions} = req.body;
-        const answers = []
-        questions.map((question) =>{
-            if(question !== ""){
-                console.log(response[question])
-                answers.push(response[question])
-            }
-        });
+        let {attendee_id, reg_form_id, response,success} = req.body;
+        if(!success){
+            success = 0
+        }
+        
         await db.execute(
-            'INSERT INTO registration(attendee_id,registration_form_id,response) VALUES(?,?,?)',
-            [attendee_id,reg_form_id,answers]
+            'INSERT INTO registration(attendee_id,registration_form_id,response, successful) VALUES(?,?,?,?)',
+            [attendee_id,reg_form_id,response, success]
         ).then(()=>{
             return res.status(200).json({message : "Successfully Registered"})
         });
-
-
     }catch(error){
         console.log(error.message)
     }
@@ -86,7 +81,7 @@ const allRegistered = async(req, res)=>{
     try{
         const {event_id} = req.params
         const response = await db.execute(
-            'SELECT r.registration_id, r.submitted_at, r.successful, r.response, a.first_name, a.last_name, a.email ' +
+            'SELECT r.registration_id, r.submitted_at, r.successful, r.response, a.first_name, a.last_name, a.email , a.gender, a.ethnic_group ' +
             'from registration  r ' + 
             'JOIN attendee a on r.attendee_id = a.attendee_id ' + 
             'JOIN registration_form rf on r.registration_form_id = rf.registration_form_id ' +
@@ -96,6 +91,7 @@ const allRegistered = async(req, res)=>{
 
         return res.status(200).json({results : response[0]})
     }catch(error){
+        console.log(error)
         return res.status(500).json({message : error.message})
     }
 }
