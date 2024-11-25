@@ -1,11 +1,11 @@
 const express = require('express')
 const router = express.Router();
-const { createRegisterForm, getRegisterForm, submitRegister, checkRegistered, allRegistered,deleteRegisterForm } = require('../controllers/register.controller')
-
+const { createRegisterForm, getRegisterForm, submitRegister, checkRegistered, allRegistered,deleteRegisterForm, getRegistrationByAttendee } = require('../controllers/register.controller')
 
 
 
 router.post('/create', createRegisterForm)
+router.get('/get/attendee/:attendee_id', getRegistrationByAttendee)
 router.get('/:event_id', getRegisterForm)
 router.post('/submit', submitRegister)
 router.post('/checkattendee', checkRegistered)

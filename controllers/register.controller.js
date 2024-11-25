@@ -1,7 +1,18 @@
 const db = require('../config/config')
 
 
-
+const getRegistrationByAttendee = async(req, res) =>{
+    const {attendee_id} = req.params;
+    await db.execute(
+        'SELECT registration_id from registration WHERE attendee_id = ?',
+        [attendee_id] 
+    ).then((response) =>{
+        return res.status(200).json({results : response[0]})
+    }).catch((error) =>{
+        return res.status(500).json({message : error.message})
+    })
+        
+}
 
 const createRegisterForm = async(req, res) => {
     try{
@@ -115,5 +126,6 @@ module.exports = {
     submitRegister,
     checkRegistered,
     allRegistered,
-    deleteRegisterForm
+    deleteRegisterForm,
+    getRegistrationByAttendee
 }
