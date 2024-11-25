@@ -9,6 +9,7 @@ const AuthRouter = require('./routes/auth.routes');
 const RegisterRouter = require('./routes/register.routes');
 const FeedbackRouter = require('./routes/feedback.routes');
 const SurveyRouter = require('./routes/survey.routes');
+const ReviewRouter = require('./routes/reviews.routes');
 const NotificationsRouter = require('./routes/notifications.routes');
 const {verifyToken} = require('./config/authorization');
 
@@ -33,6 +34,7 @@ app.use('/api/register', RegisterRouter)
 app.use('/api/feedback', FeedbackRouter);
 app.use('/api/notifications', NotificationsRouter)
 app.use('/api/survey', SurveyRouter)
+app.use('/api/reviews', ReviewRouter)
 
 
 app.get("/" , (req,res) =>{
