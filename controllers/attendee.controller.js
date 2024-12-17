@@ -27,9 +27,39 @@ const getAttendeeEvents = async(req, res) =>{
     })
 }
 
+const updatePassword = async(req, res) =>{
+    try{
+        const {attendee_id, current_password, new_password} = req.body;
+
+        const current_user = await db.execute(
+            'SELECT password from attendee where attendee_id = ?',
+            [attendee_id]
+        );
+        const isValid = await bcrypt.compare(current_password, current_user[0][0].password)
+        
+        if(isValid !== true){
+            return res.status(401).json({results : isValid})
+        }
+
+        const encryped_password = await bcrypt.hash(new_password,10)
+        await db.execute(
+            'UPDATE attendee set password = ? where attendee_id = ?',
+            [encryped_password, attendee_id]
+        ).then((response) =>{
+            return res.status(200).json({results : isValid}) 
+        })
+
+        
+    }
+    catch(error){
+        return res.status(500).json({message : error.message})
+    }
+}
+
 
 module.exports = {
     updateDeviceID,
-    getAttendeeEvents
+    getAttendeeEvents,
+    updatePassword
 }
 

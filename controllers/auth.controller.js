@@ -115,10 +115,9 @@ const attendeeCreate = async(req, res) => {
 
 const mobileLogin = async(req, res) => {
     const { email , password, device_id } = req.body;
-    console.log(email)
     try{
         const [response] = await db.execute(
-            'Select attendee_id , email, password from attendee where email = ?',
+            'Select * from attendee where email = ?',
             [email]
         )
         if(response.length > 0){

@@ -120,6 +120,22 @@ const deleteRegisterForm = async(req, res) =>{
     });
 }
 
+const fetchAllEventsForAttendee = async(req, res) =>{
+    const {attendee_id} = req.params;
+    await db.execute(
+        "SELECT r.successful, e.title, e.event_id " +
+        "from registration r " +
+        "JOIN registration_form rf on r.registration_form_id = rf.registration_form_id " + 
+        "JOIN event e ON rf.event_id = e.event_id " + 
+        "WHERE r.attendee_id = ?",
+        [attendee_id]
+    ).then((response) =>{
+        return res.status(200).json({results : response[0]})
+    }).catch((error) =>{
+        return res.status(500).json({message : error.message})
+    })
+}
+
 module.exports = {
     createRegisterForm,
     getRegisterForm,
@@ -127,5 +143,6 @@ module.exports = {
     checkRegistered,
     allRegistered,
     deleteRegisterForm,
-    getRegistrationByAttendee
+    getRegistrationByAttendee,
+    fetchAllEventsForAttendee
 }
