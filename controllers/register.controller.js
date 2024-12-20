@@ -70,19 +70,18 @@ const submitRegister = async(req, res) =>{
 
 const checkRegistered = async(req, res)=>{
     try{
-        
         const {attendee_id, event} = req.body;
         const found = await db.execute(
-    
             'SELECT r.* from registration r JOIN registration_form rf ON r.registration_form_id = rf.registration_form_id WHERE r.attendee_id = ? AND rf.event_id = ?',
             [attendee_id, event]
         )
         if(found[0].length > 0){
-            return res.status(200).json({message: "Already Registered"})
+            return res.status(200).json({message: found[0]})
         }else{
-            return res.status(204).json({message : "Not registered yet"})
+            return res.status(204).json({})
         }
     }catch(error){
+        console.log(error)
         return res.status(500).json({message : error.message})
     }
 }

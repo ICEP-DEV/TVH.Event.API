@@ -57,9 +57,23 @@ const updatePassword = async(req, res) =>{
 }
 
 
+const signAttendeeRegister = async(req, res)=>{
+    const {event} = req.params;
+    const {attendee_id} = req.body;
+
+    await db.execute(
+        ''
+    )
+
+    return res.status(200).json({results : "Successfully signed register"})
+
+}
+
+
 module.exports = {
     updateDeviceID,
     getAttendeeEvents,
-    updatePassword
+    updatePassword,
+    signAttendeeRegister
 }
 
