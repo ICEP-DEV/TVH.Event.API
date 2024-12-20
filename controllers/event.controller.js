@@ -121,6 +121,17 @@ const deleteEvent = async(req, res) => {
 
 
 
+const getEventsForCalendar = async(req, res)=>{
+  await db.execute(
+    'SELECT title, start_date, end_date from event'
+  ).then((response) =>{
+    return res.status(200).json({results : response[0]})
+  }).catch((error) =>{
+    console.log(error.message)
+    return res.status(500).json({message : error.message})
+  })
+}
+
 module.exports = {
     createEvent,
     getAllEvents,
@@ -128,6 +139,7 @@ module.exports = {
     getEventByUser,
     updateEvent,
     deleteEvent,
-    getEventByCategory
+    getEventByCategory,
+    getEventsForCalendar
 }
 
