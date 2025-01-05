@@ -58,12 +58,28 @@ const updatePassword = async(req, res) =>{
 
 
 const signAttendeeRegister = async(req, res)=>{
-    const {event} = req.params;
-    const {attendee_id} = req.body;
+    //const {event} = req.params;
+    const {registration_id} = req.body;
 
     await db.execute(
-        ''
-    )
+        'SELECT successful from registration WHERE registration_id = ?',
+        [registration_id]
+    ).then((response) =>{
+        if(response[0].successful === 1){
+            return res.status(200).json({results : "already signed the register"})
+        }
+    }).catch((error) =>{
+        console.log(error);
+        return res.status(500).json({message : error.message})
+    })
+
+    await db.execute(
+        'UPDATE registration SET successful = 1 WHERE registration_id = ? ',
+        [registration_id]
+    ).catch((error) =>{
+        console.log(error);
+        return res.status(500).json({message : error.message})
+    })
 
     return res.status(200).json({results : "Successfully signed register"})
 
