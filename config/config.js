@@ -4,11 +4,11 @@ const fs = require("fs");
 //const sql = fs.readFileSync('./database/sql.sql', 'utf8');
 
 const pool = mysql.createPool({
-  host: "sql8.freesqldatabase.com",
+  host: "102.222.124.20",
   port: 3306,
-  user: "sql8751076",
-  password: "m34W92skw7",
-  database: "sql8751076",
+  user: "a7stacr7f7n5_tvhadmin",
+  password: "FbsoA^KT2n5d",
+  database: "a7stacr7f7n5_tvhevents",
   multipleStatements: true,
 });
 
