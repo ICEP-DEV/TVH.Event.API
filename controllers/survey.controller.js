@@ -8,11 +8,11 @@ const createSurvey = async(req, res)=>{
 
     await db.execute(
         "INSERT INTO survey(create_at,expires_at, event_id, questions, title) values (?,?,?,?,?)",
-        [active_from, expires,event_id,questions,title]
+        [active_from, expires,event_id,"awdawd",title]
     ).then((response)=>{
         return res.status(200).json({results : response})
     }).catch((error)=>{
-
+        console.log(req.body)
         return res.status(500).json({message:error.message})
     })
 }

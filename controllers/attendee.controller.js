@@ -58,8 +58,8 @@ const updatePassword = async(req, res) =>{
 
 
 const signAttendeeRegister = async(req, res)=>{
-    //const {event} = req.params;
     const {registration_id} = req.body;
+    console.log("registration id : " + registration_id)
 
     await db.execute(
         'SELECT successful from registration WHERE registration_id = ?',
@@ -69,7 +69,7 @@ const signAttendeeRegister = async(req, res)=>{
             return res.status(200).json({results : "already signed the register"})
         }
     }).catch((error) =>{
-        console.log(error);
+        console.log(error.message);
         return res.status(500).json({message : error.message})
     })
 
@@ -77,12 +77,37 @@ const signAttendeeRegister = async(req, res)=>{
         'UPDATE registration SET successful = 1 WHERE registration_id = ? ',
         [registration_id]
     ).catch((error) =>{
-        console.log(error);
+        console.log(error.message);
         return res.status(500).json({message : error.message})
     })
 
     return res.status(200).json({results : "Successfully signed register"})
+}
 
+const endAttendeeRegister = async(req, res)=>{
+    const {registration_id} = req.params;
+
+    await db.execute(
+        'SELECT successful from registration WHERE registration_id = ?',
+        [registration_id]
+    ).then((response) =>{
+        if(response[0].successful === 0){
+            return res.status(200).json({results : "Hasn't signed register yet"})
+        }
+    }).catch((error) =>{
+        console.log(error);
+        return res.status(500).json({message : error.message})
+    })
+
+    await db.execute(
+        'UPDATE registration SET successful = 0 WHERE registration_id = ? ',
+        [registration_id]
+    ).catch((error) =>{
+        console.log(error);
+        return res.status(500).json({message : error.message})
+    })
+
+    return res.status(200).json({results : "Successfully removed signature from register"}) 
 }
 
 
@@ -90,6 +115,7 @@ module.exports = {
     updateDeviceID,
     getAttendeeEvents,
     updatePassword,
-    signAttendeeRegister
+    signAttendeeRegister,
+    endAttendeeRegister
 }
 

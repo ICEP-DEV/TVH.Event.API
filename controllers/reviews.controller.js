@@ -28,6 +28,7 @@ const createReview = async(req, res)=>{
 
         return res.status(200).json({results : resp[0].affectedRows})
     }catch(error){
+        console.log(req.body)
         return res.status(500).json({message : error.message})
     }
 }
