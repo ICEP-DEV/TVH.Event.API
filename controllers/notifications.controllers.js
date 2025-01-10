@@ -11,15 +11,16 @@ exports.addNotification = async (req, res) => {
       
       const query =
       "INSERT INTO notification (notification_id, attendee_id, admin_id, message, organiser_id) VALUES (?, ?, ?, ?, ?)";
-    const [result] = await db.execute(query, [
-      notification_id,
-      attendee_id,
-      admin_id,
-      message,
-      organiser_id,
-    ]);
-     
-      res
+      const [result] = await db.execute(query, [
+        notification_id,
+        attendee_id,
+        admin_id,
+        message,
+        organiser_id,
+      ]);
+      
+      console.log("Results : " + result);
+      return res
         .status(201)
         .json({ message: "Notification created successfully", notificationId: result.insertId });
     } catch (error) {
@@ -112,3 +113,9 @@ exports.getAllNotifications = async (req, res) => {
       res.status(500).json({ error: "Failed to retrieve notifications" });
   }
 };
+
+
+exports.test = (req, res) =>{
+  console.log("done")
+  return res.status(200).json({message : "done"})
+}
