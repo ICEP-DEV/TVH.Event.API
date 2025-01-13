@@ -42,6 +42,24 @@ const getAllSurveys = async(req, res)=>{
     })
 }
 
+const getAttendeeSurvey = async(req, res) =>{
+    const {attendee_id} = req.params;
+
+    await db.execute(
+        "SELECT s.* " +
+        "FROM survey s " +
+        "JOIN event e ON s.event_id = e.event_id " +
+        "JOIN registration r ON e.event_id = r.event_id " +
+        "JOIN attendee a ON r.attendee_id = a.attendee_id " +
+        "WHERE a.attendee_id = ?",
+        [attendee_id]
+    ).then((response)=>{
+        return res.status(200).json({results : response[0]})
+    }).catch((error) =>{
+        console.log(error)
+        return res.status(500).json({message : error.message})
+    })
+}
 
 
 const getAllSurveysForAttendee = async(req, res) =>{
@@ -108,5 +126,6 @@ module.exports = {
     getAllSurveys,
     createSurvey,
     getSurvey,
-    getAllSurveysForAttendee
+    getAllSurveysForAttendee,
+    getAttendeeSurvey
 }
