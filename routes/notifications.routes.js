@@ -8,9 +8,9 @@ router.delete("/:id", deleteNotification);
 
 router.put('/update/:id', updateNotificationMessage);
 
-router.get('/notifications', getAllNotifications);
+router.get('/', getAllNotifications);
 
-router.get('/notifications/:notification_id', getNotificationsById);
+router.get('/:notification_id', getNotificationsById);
 
 
 
