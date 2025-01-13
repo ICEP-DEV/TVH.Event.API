@@ -43,7 +43,6 @@ const getAllSurveys = async(req, res)=>{
 }
 
 
-
 const getAllSurveysForAttendee = async(req, res) =>{
     const {attendee_id} = req.params;
     let surveys = [];
