@@ -2,33 +2,35 @@ const db = require("../config/config");
 //CREATING CRUD APPLICATION
 //CREATING A NOTIFICATION
 exports.addNotification = async (req, res) => {
-    try {
-      const { notification_id, attendee_id, admin_id, message, organiser_id } = req.body;
-      if (!attendee_id || !admin_id || !message || !organiser_id) {
-        return res.status(400).json({ error: "All fields are required" });
-      }
-  
-      
-      const query =
-      "INSERT INTO notification (notification_id, attendee_id, admin_id, message, organiser_id) VALUES (?, ?, ?, ?, ?)";
-      const [result] = await db.execute(query, [
-        notification_id,
-        attendee_id,
-        admin_id,
-        message,
-        organiser_id,
-      ]);
-      
-      console.log("Results : " + result);
-      return res
-        .status(201)
-        .json({ message: "Notification created successfully", notificationId: result.insertId });
-    } catch (error) {
-     
-      console.error(error);
-      res.status(500).json({ error: error.message });
+  try {
+    console.log("Incoming request body:", req.body);
+
+    const { notification_id, attendee_id, admin_id, message, organiser_id } = req.body;
+
+    if (!notification_id || !attendee_id || !admin_id || !message || !organiser_id) {
+      return res.status(400).json({ error: "All fields are required." });
     }
-  };
+
+    const query =
+      "INSERT INTO notification (notification_id, attendee_id, admin_id, message, organiser_id) VALUES (?, ?, ?, ?, ?)";
+    const [result] = await db.execute(query, [
+      notification_id,
+      attendee_id,
+      admin_id,
+      message,
+      organiser_id,
+    ]);
+
+    res.status(201).json({
+      message: "Notification created successfully.",
+      notificationId: notification_id,
+    });
+  } catch (error) {
+    console.error("Error creating notification:", error.message);
+    res.status(500).json({ error: "Failed to create notification." });
+  }
+};
+
   // DELETING THE NOTIFICATIONS USING THE notification_id
 exports.deleteNotification = async (req, res) => {
   try {
