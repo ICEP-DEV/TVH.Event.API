@@ -7,6 +7,8 @@ const createSurvey = async (req, res) => {
   questions.forEach((question) => {
     q += question + "|";
   });
+  q = q.substring(0, (q.length - 1));
+  console.log(q);
   await db
     .execute(
       "INSERT INTO survey(create_at,expires_at, event_id, questions, title) values (?,?,?,?,?)",
