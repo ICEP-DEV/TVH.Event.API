@@ -10,7 +10,7 @@ exports.addFeedback = async (req, res) => {
     }
 
     const query =
-      "INSERT INTO feedback (survey_id, registration_id,responses,rating) VALUES (?, ?, ?, ?)";
+      "INSERT INTO survey_feedback (survey_id, registration_id,responses,rating) VALUES (?, ?, ?, ?)";
     const [result] = await db.execute(query, [
       survey_id,
       registration_id,
@@ -35,7 +35,7 @@ exports.getFeedbackBySurvey = async (req, res) => {
         return res.status(400).json({ error: "Survey ID is required" });
       }
   
-      const query = "SELECT * FROM feedback WHERE survey_id = ?";
+      const query = "SELECT * FROM survey_feedback WHERE survey_id = ?";
       const [feedbacks] = await db.execute(query, [survey_id]);
   
       if (feedbacks.length === 0) {
@@ -56,7 +56,7 @@ exports.getFeedbackByEvent = async(req, res) => {
 
   await db.execute(
     "SELECT f.feedback_id, f.rating, f.responses,f.submitted, s.questions, a.first_name, a.last_name, a.gender " +
-    "FROM feedback f " +
+    "FROM survey_feedback f " +
     "JOIN survey s on f.survey_id = s.survey_id " +
     "JOIN registration r on f.registration_id = r.registration_id " +
     "JOIN attendee a on r.attendee_id = a.attendee_id " +
@@ -80,7 +80,7 @@ exports.deleteFeedback = async (req, res) => {
       }
   
       
-      const query = "DELETE FROM feedback WHERE feedback_id = ?";
+      const query = "DELETE FROM survey_feedback WHERE feedback_id = ?";
       const [result] = await db.execute(query, [id]);
   
       if (result.affectedRows === 0) {
