@@ -5,33 +5,24 @@ exports.addNotification = async (req, res) => {
   try {
     console.log("Incoming request body:", req.body);
 
-    // Destructure fields from the request body, including event_id
-    const { notification_id, attendee_id, admin_id, message, organiser_id, event_id } = req.body;
+    
+    const { admin_id, organiser_id, event_id, message } = req.body;
 
-    // Validate all required fields, including event_id
-    if (!notification_id || !attendee_id || !admin_id || !message || !organiser_id || !event_id) {
+    
+    if (!admin_id || !organiser_id || !event_id || !message) {
       return res.status(400).json({ error: "All fields are required." });
     }
 
-    // SQL query to insert data into the notification table, including event_id
-    const query =
-      "INSERT INTO notification (notification_id, attendee_id, admin_id, message, organiser_id, event_id) VALUES (?, ?, ?, ?, ?, ?)";
-
-    // Execute the query with the event_id included
-    const [result] = await db.execute(query, [
-      notification_id,
-      attendee_id,
-      admin_id,
-      message,
-      organiser_id,
-      event_id,
-    ]);
     
+    const query =
+      "INSERT INTO notification (admin_id, organiser_id, event_id, message) VALUES (?, ?, ?, ?)";
 
-    // Respond with a success message
+    
+    const [result] = await db.execute(query, [admin_id, organiser_id, event_id, message]);
+
     res.status(201).json({
       message: "Notification created successfully.",
-      notificationId: notification_id,
+      notificationId: result.insertId, 
     });
   } catch (error) {
     console.error("Error creating notification:", error.message);
@@ -39,98 +30,99 @@ exports.addNotification = async (req, res) => {
   }
 };
 
-// DELETING THE NOTIFICATIONS USING THE notification_id
+// DELETING A NOTIFICATION
 exports.deleteNotification = async (req, res) => {
   try {
-      const { id } = req.params; 
-      if (!id) {
-          return res.status(400).json({ error: "Notification ID is required" });
-      }
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ error: "Notification ID is required" });
+    }
 
-      const query = "DELETE FROM notification WHERE notification_id = ?";
-      const [result] = await db.execute(query, [id]);
+    const query = "DELETE FROM notification WHERE notification_id = ?";
+    const [result] = await db.execute(query, [id]);
 
-      if (result.affectedRows === 0) {
-          return res.status(404).json({ message: "Notification not found" });
-      }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
 
-      res.status(200).json({ message: "Notification deleted successfully" });
+    res.status(200).json({ message: "Notification deleted successfully" });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to delete notification" });
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete notification" });
   }
 };
 
-// UPDATING THE MESSAGES OF THE NOTIFICATIONS
+// UPDATING THE MESSAGE OF A NOTIFICATION
 exports.updateNotificationMessage = async (req, res) => {
   try {
-      const { id } = req.params; 
-      const { message, event_id } = req.body;  // Now you can also update event_id
+    const { id } = req.params;
+    const { message, event_id } = req.body; // Include event_id if it needs to be updated
 
-      if (!id) {
-          return res.status(400).json({ error: "Notification ID is required" });
-      }
+    if (!id) {
+      return res.status(400).json({ error: "Notification ID is required" });
+    }
 
-      if (!message) {
-          return res.status(400).json({ error: "Message is required" });
-      }
+    if (!message) {
+      return res.status(400).json({ error: "Message is required" });
+    }
 
-      // Update the query to set the message and event_id
-      const query = "UPDATE notification SET message = ?, event_id = ? WHERE notification_id = ?";
-      const [result] = await db.execute(query, [message, event_id, id]);
+    // SQL query to update the message (and event_id if provided)
+    const query =
+      "UPDATE notification SET message = ?, event_id = ? WHERE notification_id = ?";
+    const [result] = await db.execute(query, [message, event_id, id]);
 
-      if (result.affectedRows === 0) {
-          return res.status(404).json({ message: "Notification not found" });
-      }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Notification not found" });
+    }
 
-      res.status(200).json({ message: "Notification updated successfully" });
+    res.status(200).json({ message: "Notification updated successfully" });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to update notification message" });
+    console.error(error);
+    res.status(500).json({ error: "Failed to update notification message" });
   }
 };
 
-// GETTING THE NOTIFICATIONS BY ID
+// GETTING NOTIFICATIONS BY ID
 exports.getNotificationsById = async (req, res) => {
   try {
-      const { notification_id } = req.params; 
-      if (!notification_id) {
-          return res.status(400).json({ error: "Notification ID is required" });
-      }
+    const { notification_id } = req.params;
+    if (!notification_id) {
+      return res.status(400).json({ error: "Notification ID is required" });
+    }
 
-      const query = "SELECT * FROM notification WHERE notification_id = ?";
-      const [notifications] = await db.execute(query, [notification_id]);
+    const query = "SELECT * FROM notification WHERE notification_id = ?";
+    const [notifications] = await db.execute(query, [notification_id]);
 
-      if (notifications.length === 0) {
-          return res.status(404).json({ message: "No notifications found for the given ID" });
-      }
+    if (notifications.length === 0) {
+      return res.status(404).json({ message: "No notifications found for the given ID" });
+    }
 
-      res.status(200).json(notifications);
+    res.status(200).json(notifications);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to retrieve notifications" });
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve notifications" });
   }
 };
 
-// GETTING ALL THE NOTIFICATIONS FROM THE DATABASE
+// GETTING ALL NOTIFICATIONS
 exports.getAllNotifications = async (req, res) => {
   try {
-      const query = "SELECT * FROM notification";
-      const [notifications] = await db.execute(query);
+    const query = "SELECT * FROM notification";
+    const [notifications] = await db.execute(query);
 
-      if (notifications.length === 0) {
-          return res.status(404).json({ message: "No notifications found" });
-      }
+    if (notifications.length === 0) {
+      return res.status(404).json({ message: "No notifications found" });
+    }
 
-      res.status(200).json(notifications);
+    res.status(200).json(notifications);
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Failed to retrieve notifications" });
+    console.error(error);
+    res.status(500).json({ error: "Failed to retrieve notifications" });
   }
 };
 
-// Test route to check if everything is working
+// TEST ROUTE
 exports.test = (req, res) => {
-  console.log("done")
-  return res.status(200).json({message : "done"})
+  console.log("Test route hit");
+  res.status(200).json({ message: "done" });
 };
