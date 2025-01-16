@@ -50,12 +50,12 @@ exports.getFeedbackBySurvey = async (req, res) => {
   };
   
 
-exports.getFeedbackByEvent = async(req, res) => {
+exports.getFeedbackByEvent = async(req, res) => { // Fetch 
   const {event_id} = req.params;
   
 
   await db.execute(
-    "SELECT f.feedback_id, f.rating, f.responses,f.submitted, s.questions, a.first_name, a.last_name, a.gender " +
+    "SELECT f.feedback_id, f.responses,f.submitted, s.questions, a.first_name, a.last_name, a.gender " +
     "FROM survey_feedback f " +
     "JOIN survey s on f.survey_id = s.survey_id " +
     "JOIN registration r on f.registration_id = r.registration_id " +
