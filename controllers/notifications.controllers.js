@@ -3,32 +3,35 @@ const db = require("../config/config");
 // CREATING A NOTIFICATION
 exports.addNotification = async (req, res) => {
   try {
-    console.log("Incoming request body:", req.body);
-
-    
     const { admin_id, organiser_id, event_id, message } = req.body;
 
-    
     if (!admin_id || !organiser_id || !event_id || !message) {
       return res.status(400).json({ error: "All fields are required." });
     }
 
-    
-    const query =
-      "INSERT INTO notification (admin_id, organiser_id, event_id, message) VALUES (?, ?, ?, ?)";
+    const query = `
+      INSERT INTO notification (admin_id, organiser_id, event_id, message) 
+      VALUES (?, ?, ?, ?)
+    `;
 
-    
     const [result] = await db.execute(query, [admin_id, organiser_id, event_id, message]);
 
     res.status(201).json({
       message: "Notification created successfully.",
-      notificationId: result.insertId, 
+      notification: {
+        admin_id,
+        organiser_id,
+        event_id,
+        message,
+        notification_id: result.insertId,
+      },
     });
   } catch (error) {
-    console.error("Error creating notification:", error.message);
+    console.error("Error creating notification:", error);
     res.status(500).json({ error: "Failed to create notification." });
   }
 };
+
 
 // DELETING A NOTIFICATION
 exports.deleteNotification = async (req, res) => {
