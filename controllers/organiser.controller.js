@@ -7,10 +7,11 @@ const {secret_key} = require('../config/authorization')
 
 const getAllOrganiser = async(req, res)=>{
     try{
-        [result] = await db.execute(
-            'SELECT * from organiser'
-        );
-        return res.status(200).json(result)
+        await db.execute(
+            "SELECT o.organiser_id, o.name, o.email, o.surname, o.is_active, org.name as organization_name FROM organiser o JOIN organization org ON o.organization_id = org.organization_id",
+        ).then((response) =>{
+            return res.status(200).json(response[0])
+        })
     }
     catch(error){
         return res.status(500).json({message : error.message})
@@ -64,11 +65,41 @@ const deleteOrganiser = async(req, res)=>{
     }
 }
 
+const archiveOrganiser = async(req, res)=>{
+
+    const {id} = req.params;
+    await db.execute(
+        "UPDATE organiser SET is_active = 0 WHERE organiser_id = ?",
+        [id]
+    ).then((response) =>{
+        return res.status(200).json({response})
+    }).catch((error) =>{
+        console.log(error);
+    })
+}
+
+const reinstateOrganizer = async(req, res)=>{
+
+    const {id} = req.params;
+
+    await db.execute(
+        "UPDATE organiser SET is_active = 1 WHERE organiser_id = ?",
+        [id]
+    ).then((response) =>{
+        return res.status(200).json({response})
+    }).catch((error) =>{
+        console.log(error);
+    })
+
+}
+
 
 module.exports = {
     getAllOrganiser,
     getOrganiser,
     updateOrganiser,
     deleteOrganiser,
+    archiveOrganiser,
+    reinstateOrganizer
 }
 

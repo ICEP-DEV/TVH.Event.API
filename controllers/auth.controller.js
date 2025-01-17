@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const db = require('../config/config')
 const jwt = require('jsonwebtoken')
 const {secret_key} = require('../config/authorization')
-
+const generator = require('generate-password');
 
 
 
@@ -24,16 +24,24 @@ const adminCreate = async(req, res)=>{
 
 
 const organiserCreate = async(req, res)=>{
+    
     try{
-        let {name, password, email} = req.body;
+        let gen_password = generator.generate({
+            length: 10,
+            numbers: true,
+            symbols: true,
+            uppercase: true
+        })
 
-        password = await bcrypt.hash(password, 10);
+        let {email} = req.body;
+
+        const password = await bcrypt.hash(password, 10);
 
         const [result] = await db.execute(
-            'INSERT INTO organiser (name, password, email) values (?,?,?)',
-            [name, password, email]
+            'INSERT INTO organiser (password, email) values (?,?)',
+            [password, email]
         );
-        return res.status(200).json({result});
+        return res.status(200).json({email, password : gen_password});
     }
     catch(error){
         return res.status(500).json({message : error.message})

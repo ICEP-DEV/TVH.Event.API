@@ -11,6 +11,7 @@ const FeedbackRouter = require('./routes/feedback.routes');
 const SurveyRouter = require('./routes/survey.routes');
 const ReviewRouter = require('./routes/reviews.routes');
 const NotificationsRouter = require('./routes/notifications.routes');
+const OrganizationRouter = require('./routes/organization.routes');
 const {verifyToken} = require('./config/authorization');
 
 
@@ -35,7 +36,7 @@ app.use('/api/feedback', FeedbackRouter);
 app.use('/api/notifications', NotificationsRouter)
 app.use('/api/survey', SurveyRouter)
 app.use('/api/reviews', ReviewRouter)
-
+app.use('/api/organization', OrganizationRouter)
 
 app.get("/" , (req,res) =>{
     return res.status(200).json({message: req.body.message})
