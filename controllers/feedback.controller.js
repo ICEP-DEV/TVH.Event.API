@@ -4,23 +4,50 @@ const db = require("../config/config");
 // Add new feedback
 exports.addFeedback = async (req, res) => {
   try {
-    const { survey_id, registration_id, response, rating } = req.body;
-    if (!survey_id || !registration_id || !response || !rating) {
+    const { survey_id, response, attendee_id, event_id } = req.body;
+
+    if (!survey_id || !response || !attendee_id || !event_id) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    const query =
-      "INSERT INTO survey_feedback (survey_id, registration_id,responses,rating) VALUES (?, ?, ?, ?)";
-    const [result] = await db.execute(query, [
+    // Query to get the registration_id
+    const registrationQuery = `
+      SELECT r.registration_id 
+      FROM registration r
+      JOIN registration_form f ON r.registration_form_id = f.registration_form_id
+      WHERE r.attendee_id = ? AND f.event_id = ?
+    `;
+
+    const [registrationResult] = await db.execute(registrationQuery, [
+      attendee_id,
+      event_id,
+    ]);
+
+    if (registrationResult.length === 0) {
+      HTMLFormControlsCollection.log
+      return res
+        .status(404)
+        .json({ error: "Registration not found for the given attendee and event" });
+    }
+
+    const registration_id = registrationResult[0].registration_id;
+
+    // Query to insert feedback
+    const insertFeedbackQuery = `
+      INSERT INTO survey_feedback (survey_id, registration_id, responses) 
+      VALUES (?, ?, ?)
+    `;
+
+    const [result] = await db.execute(insertFeedbackQuery, [
       survey_id,
       registration_id,
       response,
-      rating,
     ]);
 
-    res
-      .status(201)
-      .json({ message: "Feedback created successfully", feedbackId: result.insertId });
+    res.status(201).json({
+      message: "Feedback created successfully",
+      feedbackId: result.insertId,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });

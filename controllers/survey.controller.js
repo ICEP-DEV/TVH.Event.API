@@ -78,7 +78,7 @@ const getAllSurveysForAttendee = async (req, res) => {
     });
 
     allFeedback = await db.execute(
-      "SELECT f.survey_id, rf.event_id from feedback f " +
+      "SELECT f.survey_id, rf.event_id from survey_feedback f " +
         "JOIN registration r on f.registration_id = r.registration_id " +
         "JOIN registration_form rf on r.registration_form_id = rf.registration_form_id " +
         condition.slice(0, -4)
@@ -106,6 +106,7 @@ const getAllSurveysForAttendee = async (req, res) => {
 
     return res.status(200).json({ surveys: inCompletedSurveys });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message });
   }
 };
