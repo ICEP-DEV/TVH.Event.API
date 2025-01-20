@@ -3,6 +3,7 @@ const db = require('../config/config')
 const jwt = require('jsonwebtoken')
 const {secret_key} = require('../config/authorization')
 const generator = require('generate-password');
+const transporter = require("../config/send_email")
 
 
 
@@ -33,17 +34,29 @@ const organiserCreate = async(req, res)=>{
             uppercase: true
         })
 
-        let {email} = req.body;
+        let {email, org_id} = req.body;
 
-        const password = await bcrypt.hash(password, 10);
-
+        const password = await bcrypt.hash(gen_password, 10);
+        /*
         const [result] = await db.execute(
-            'INSERT INTO organiser (password, email) values (?,?)',
-            [password, email]
+            'INSERT INTO organiser (password, email, organization_id) values (?,?,?)',
+            [password, email, org_id]
         );
+        */
+        await transporter.sendMail({
+            from : "info.events@7stack.co.za",
+            to : email,
+            subject : "Account Creation",
+            html : "<div><h3>Congratulations on creating your account with us</h3><p>Your password is " + gen_password + "</p></div>"
+        }).then((response) =>{
+            console.log(response)
+        }).catch((error) =>{
+            console.log(error)
+        })
         return res.status(200).json({email, password : gen_password});
     }
     catch(error){
+        console.log(error)
         return res.status(500).json({message : error.message})
     }
 }
