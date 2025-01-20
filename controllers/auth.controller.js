@@ -37,28 +37,35 @@ const organiserCreate = async(req, res)=>{
         let {email, org_id} = req.body;
 
         const password = await bcrypt.hash(gen_password, 10);
-        /*
-        const [result] = await db.execute(
+        
+        await db.execute(
             'INSERT INTO organiser (password, email, organization_id) values (?,?,?)',
             [password, email, org_id]
-        );
-        */
-        await transporter.sendMail({
-            from : "info.events@7stack.co.za",
-            to : email,
-            subject : "Account Creation",
-            html : "<div><h3>Congratulations on creating your account with us</h3><p>Your password is " + gen_password + "</p></div>"
-        }).then((response) =>{
-            console.log(response)
-        }).catch((error) =>{
-            console.log(error)
+        ).then(()=>{
+            organiserCreationEmail(email, gen_password);
         })
+        
+        
         return res.status(200).json({email, password : gen_password});
     }
     catch(error){
         console.log(error)
         return res.status(500).json({message : error.message})
     }
+}
+
+const organiserCreationEmail = async(email, gen_password)=>{
+    await transporter.sendMail({
+        from : "info.events@7stack.co.za",
+        to : email,
+        subject : "Account Creation",
+        html : "<div><h3>Congratulations on creating your account with us</h3><p>Your password is " + gen_password + "</p></div>"
+    }).then((response) =>{
+        console.log(response)
+    }).catch((error) =>{
+        console.log(error)
+        throw error;
+    })
 }
 
 
