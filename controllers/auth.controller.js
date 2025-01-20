@@ -25,7 +25,7 @@ const adminCreate = async(req, res)=>{
 
 
 const organiserCreate = async(req, res)=>{
-    
+
     try{
         let gen_password = generator.generate({
             length: 10,
@@ -60,8 +60,6 @@ const organiserCreationEmail = async(email, gen_password)=>{
         to : email,
         subject : "Account Creation",
         html : "<div><h3>Congratulations on creating your account with us</h3><p>Your password is " + gen_password + "</p></div>"
-    }).then((response) =>{
-        console.log(response)
     }).catch((error) =>{
         console.log(error)
         throw error;
