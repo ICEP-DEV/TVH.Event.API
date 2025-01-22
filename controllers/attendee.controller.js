@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt')
 const db = require('../config/config')
-const jwt = require('jsonwebtoken')
-const {secret_key} = require('../config/authorization')
+const transporter = require("../config/send_email")
 
 
 const updateDeviceID = async(req, res) =>{
@@ -9,6 +8,48 @@ const updateDeviceID = async(req, res) =>{
     
     console.log(device_id)
 }
+
+const getAttendeeByEmail = async(req, res) =>{
+    const {email} = req.params;
+    console.log(email);
+    await db.execute("SELECT * from attendee where email = ?", [email]
+    ).then((response) => {
+        return res.status(200).json({results : response[0]})
+    }).catch((error) =>{
+        return res.status(500).json({message : error.message})
+    })
+    
+}
+
+const sendOtp = async(email, otp) =>{
+    await transporter.sendMail({
+        from : "info.events@7stack.co.za",
+        to : email,
+        subject : "HackTrack Reset Password OTP",
+        html : "<div><h3>Reset your HackTrack login password</h3><p>Use the following OTP to reset your password <br> <strong>" + otp + "</strong></p></div>"
+    }).catch((error) =>{
+        console.log(error)
+        throw error;
+    })
+}
+
+const generateOtp = async(req, res) =>{
+    const {email} = req.params;
+    const otp = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+    
+    console.log("Email : " + email);
+  
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+  
+    try {
+      await sendOtp(email, otp);
+      return res.status(200).json({ otp: otp });
+    } catch (error) {
+      return res.status(500).json({ error: "Failed to send OTP" });
+    }
+  };  
 
 const getAttendeeEvents = async(req, res) =>{
     const {attendee_id} = req.params;
@@ -116,6 +157,8 @@ module.exports = {
     getAttendeeEvents,
     updatePassword,
     signAttendeeRegister,
-    endAttendeeRegister
+    endAttendeeRegister,
+    getAttendeeByEmail,
+    generateOtp
 }
 
