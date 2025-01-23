@@ -97,6 +97,19 @@ const updatePassword = async(req, res) =>{
     }
 }
 
+const resetPassword = async(req, res) =>{
+    const {email, new_password} = req.body;
+
+    const encryped_password = await bcrypt.hash(new_password,10)
+    await db.execute(
+        'UPDATE attendee set password = ? where email = ?',
+        [encryped_password, email]
+    ).then((response) =>{
+        return res.status(200).json({results : "Password successfully reset"}) 
+    }).catch((error) =>{
+        return res.status(500).json({message : error.message})
+    })
+}
 
 const signAttendeeRegister = async(req, res)=>{
     const {registration_id} = req.body;
@@ -159,6 +172,7 @@ module.exports = {
     signAttendeeRegister,
     endAttendeeRegister,
     getAttendeeByEmail,
-    generateOtp
+    generateOtp,
+    resetPassword
 }
 
