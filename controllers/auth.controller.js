@@ -16,7 +16,7 @@ const adminCreate = async(req, res)=>{
         'INSERT INTO admin (username,email,password) VALUES (?,?,?)',
         [username, email, password]
     ).then((response) => {
-        return res.status(200).json({result:response})
+        return res.status(201).json({result:response})
     }).catch((error) => {
         return res.status(500).json({message : error.message})
     });
@@ -46,7 +46,7 @@ const organiserCreate = async(req, res)=>{
         })
         
         
-        return res.status(200).json({email, password : gen_password});
+        return res.status(201).json({email, password : gen_password});
     }
     catch(error){
         console.log(error)
@@ -73,6 +73,7 @@ const webuserLogin = async(req, res) =>{
     try{
         let { email , password } = req.body;
         let type = "";
+        let username = "";
 
         let [result] = await db.execute(
             'SELECT * from admin WHERE email = ?', 
@@ -81,6 +82,7 @@ const webuserLogin = async(req, res) =>{
 
         if(result.length > 0){
             type = "admin";
+            username = result[0].username;
         }
         else{
             [result] = await db.execute(
@@ -89,9 +91,13 @@ const webuserLogin = async(req, res) =>{
             );
             if(result.length > 0){
                 type = "organiser";
+                username = result[0].name + ' ' + result[0].surname;
+
+                if(result[0].is_active === 0){
+                    return res.status(403).json({message : "Invalid Credentials"}); 
+                }
             } 
         }
-        
 
         if(type.length > 0){
             const isValid = await bcrypt.compare(password, result[0].password);
@@ -105,7 +111,7 @@ const webuserLogin = async(req, res) =>{
                     type,
                     res : {
                         user_id : result[0][type + "_id"],
-                        username : result[0].username,
+                        username : username,
                         email : result[0].email,
                     }
                 })

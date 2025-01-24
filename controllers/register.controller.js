@@ -1,5 +1,5 @@
 const db = require('../config/config')
-
+const transporter = require('../config/send_email')
 
 const getRegistrationByAttendee = async(req, res) =>{
     const {attendee_id} = req.params;
@@ -51,21 +51,56 @@ const getRegisterForm = async(req, res) => {
 }
 
 const submitRegister = async(req, res) =>{
+    
     try{
-        let {attendee_id, reg_form_id, response,success} = req.body;
+        let {attendee_id, reg_form_id, questions, response, success} = req.body;
+        let converted_res = '';
+
         if(!success){
             success = 0
         }
         
+        questions.map((question) =>{
+            converted_res += question + '|'
+        });
+
+
         await db.execute(
             'INSERT INTO registration(attendee_id,registration_form_id,response, successful) VALUES(?,?,?,?)',
-            [attendee_id,reg_form_id,response, success]
+            [attendee_id,reg_form_id,converted_res, success]
         ).then(()=>{
+
+            send_confirmation_email(attendee_id,reg_form_id);
+
             return res.status(200).json({message : "Successfully Registered"})
         });
     }catch(error){
         console.log(error.message)
     }
+}
+
+
+const send_confirmation_email = async(attendee_id, reg_form_id)=>{
+
+    const email = await db.execute(
+        'SELECT email from attendee where attendee_id = ?',[attendee_id]
+    )
+
+    const event_name = await db.execute(
+        'SELECT e.title, e.start_date from event e ' +
+        'JOiN registration_form rf on rf.event_id = e.event_id ' +
+        'WHERE rf.registration_form_id = ?',
+        [reg_form_id]
+    )
+
+    await transporter.sendMail({
+        from : 'info.events@7stack.co.za',
+        to : email[0][0].email,
+        subject : 'Application for the ' + event_name[0][0].title + ' event',
+        text : 'This email is to serve as a confirmation that you have applied for the ' + event_name[0][0].title + ' event, that will be help on ' + event_name[0][0]['start_date'].toString()
+    })
+
+    
 }
 
 const checkRegistered = async(req, res)=>{
@@ -143,5 +178,5 @@ module.exports = {
     allRegistered,
     deleteRegisterForm,
     getRegistrationByAttendee,
-    fetchAllEventsForAttendee
+    fetchAllEventsForAttendee,
 }

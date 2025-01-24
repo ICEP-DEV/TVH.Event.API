@@ -62,6 +62,7 @@ const getAllSurveysForAttendee = async (req, res) => {
   let inCompletedSurveys = [];
   let attendeeSurveys = [];
 
+
   try {
     surveys = await db.execute("select * from survey ");
 
@@ -77,12 +78,16 @@ const getAllSurveysForAttendee = async (req, res) => {
       condition += " f.registration_id = " + event.registration_id + " || ";
     });
 
+
     allFeedback = await db.execute(
       "SELECT f.survey_id, rf.event_id from survey_feedback f " +
         "JOIN registration r on f.registration_id = r.registration_id " +
         "JOIN registration_form rf on r.registration_form_id = rf.registration_form_id " +
-        condition.slice(0, -4)
-    );
+        "WHERE f.registration_id = 6 || f.registration_id = 32"
+        //condition.slice(0, -4)
+    ).catch((error)=>{
+      console.log(error)
+    })
 
     for (i = 0; i < surveys[0].length; i++) {
       for (j = 0; j < allRegisteredEvents[0].length; j++) {
@@ -95,8 +100,11 @@ const getAllSurveysForAttendee = async (req, res) => {
     inCompletedSurveys = attendeeSurveys;
 
     for (i = 0; i < attendeeSurveys.length; i++) {
+      
       for (j = 0; j < allFeedback[0].length; j++) {
+        
         if (attendeeSurveys[i].survey_id === allFeedback[0][j].survey_id) {
+          
           inCompletedSurveys = inCompletedSurveys.filter(
             (event) => event.survey_id != allFeedback[0][j].survey_id
           );
