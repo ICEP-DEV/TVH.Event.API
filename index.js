@@ -29,7 +29,7 @@ app.use("/api/event", EventRouter);
 app.use("/api/category", authMiddleware, CategoryRouter);
 app.use("/api/attendee", AttendeeRouter);
 app.use("/api/auth", AuthRouter);
-app.use("/api/register", authMiddleware, RegisterRouter);
+app.use("/api/register",  RegisterRouter);
 app.use("/api/feedback", authMiddleware, FeedbackRouter);
 app.use("/api/notifications", authMiddleware, NotificationsRouter);
 app.use("/api/survey", authMiddleware, SurveyRouter);

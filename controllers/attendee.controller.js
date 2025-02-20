@@ -21,6 +21,85 @@ const getAttendeeByEmail = async (req, res) => {
     });
 };
 
+const addEventToFavourites = async (req, res) => {
+  const { event_id, attendee_id } = req.body;
+  console.log(req.body);
+  console.log("Attendee ID: " + attendee_id);
+  console.log("Event ID: " + event_id);
+
+  try {
+    ///set the event as a favourite
+    const [result] = await db.execute(
+      "INSERT INTO attendee_favourite_event ( event_id, attendee_id) VALUES ( ?, ?)",
+      [ event_id, attendee_id]
+    );
+    console.log("Added event to favourites successfully");
+    return res.status(200).json({ results: result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const removeEventFromFavourites = async (req, res) => {
+  const { event_id, attendee_id } = req.body;
+  console.log(req.body);
+  console.log("Attendee ID: " + attendee_id);
+  console.log("Event ID: " + event_id);
+
+  try {
+    ///set the event as a favourite
+    const [result] = await db.execute(
+      "DELETE FROM attendee_favourite_event WHERE event_id = ? AND attendee_id = ?",
+      [ event_id, attendee_id]
+    );
+    console.log("Removed event from favourites successfully");
+    return res.status(200).json({ results: result });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const getFavoriteEvents = async (req, res) => {
+  const { attendee_id } = req.params;
+
+  await db
+    .execute(
+      "SELECT e.* from event e " +
+        "JOIN attendee_favourite_event afe on afe.event_id = e.event_id " +
+        "WHERE afe.attendee_id = ?",
+      [attendee_id]
+    )
+    .then((response) => {
+      if( response[0].length === 0){
+        //Return false if no favourite events are found
+        return res.status(200).json({ results: false });  
+      }else{
+        //Return the favourite events
+        return res.status(200).json({ results: response[0] });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(500).json({ message: error.message });
+    });
+};
+
+const isFavourite = async (req, res) => {
+  const { event_id, attendee_id } = req.body;
+
+  await db
+    .execute("SELECT * from attendee_favourite_event where event_id = ? and attendee_id = ?", [event_id, attendee_id])
+    .then((response) => {
+      if (response[0].length > 0) {
+        return res.status(200).json({ results: true });
+      } else {
+        return res.status(200).json({ results: false });
+      }
+    })
+};
+
 const sendOtp = async (email, otp) => {
   await transporter
     .sendMail({
@@ -205,4 +284,8 @@ module.exports = {
   getAttendeeByEmail,
   generateOtp,
   resetPassword,
+  addEventToFavourites,
+  removeEventFromFavourites,
+  getFavoriteEvents,
+  isFavourite
 };
