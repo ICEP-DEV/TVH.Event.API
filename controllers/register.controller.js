@@ -60,10 +60,10 @@ const submitRegister = async(req, res) =>{
             success = 0
         }
         
-        questions.map((question) =>{
-            converted_res += question + '|'
+        response.map((ans) =>{
+            converted_res += ans + '|'
         });
-
+        
 
         await db.execute(
             'INSERT INTO registration(attendee_id,registration_form_id,response, successful) VALUES(?,?,?,?)',
