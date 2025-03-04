@@ -55,7 +55,7 @@ const submitRegister = async(req, res) =>{
     try{
         let {attendee_id, reg_form_id, questions, response, success} = req.body;
         let converted_res = '';
-
+        console.log("responses: ", response)
         if(!success){
             success = 0
         }
